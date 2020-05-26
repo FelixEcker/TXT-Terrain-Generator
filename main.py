@@ -85,11 +85,11 @@ def startGeneration():
 
         # Change up the Tile if the tile counter matches the random number
         if waterCount == random.randint(2,size/2):
-                wassfolge = 0 # Reset the Water Counter
+                waterCount = 0 # Reset the Water Counter
                 tile = 1      # Set the Tile to land
 
         if landCount == random.randint(4,size-4):
-                labdfolge = 0 # Reset the Land Counter
+                landCount = 0 # Reset the Land Counter
                 tile = 0      # Set the Tile to Water
 
         # If its a Land Tile, run it through these if statements to (potentially) make it a forrest or a mountain
