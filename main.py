@@ -2,6 +2,7 @@ import random
 import re
 
 import terrainExporter
+import terrainTypes
 
 # General Config
 exportTerrainToTXT = True
@@ -10,23 +11,27 @@ exportTerrainToTXT = True
 size           = 64 # Size of the Terrain to be generated
 forestChance   = 20 # Chance of Forests Replacing a normal land tile
 mountainChance = 80 # Chance of Mountains Replacing a normal land tile
+desertChance   = 100 # Chance of a Desert Replacing a normal land tile
+ravineChance   = 200 # Chance of a Ravine Replacing a normal land tile
 
 # Statistics
 landTotal     = 0
 forestTotal   = 0
 mountainTotal = 0
+desertTotal   = 0
+ravineTotal   = 0
 waterTotal    = 0
 
 # Important Variables for Generation
 totalSize        = size*size
 baseField        = ""
-tiles            = ["~", "#", "▲", "F"]
+tiles            = terrainTypes.terrainTypes
 generatedTileArr = []
 
 finishedTerrain  = ""
 
 def main():
-    global finishedTerrain, landTotal, mountainTotal, forestTotal, waterTotal
+    global finishedTerrain, landTotal, mountainTotal, forestTotal, waterTotal, desertTotal, ravineTotal
     print ("ASCII Terrain Generator by Felix Eckert")
     print ("Starting Generation...")
     startGeneration()
@@ -37,15 +42,21 @@ def main():
 
     if exportTerrainToTXT:
         print ("Exporting...")
-        terrainExporter.writeTerrainFile(finishedTerrain, landTotal, mountainTotal, forestTotal, waterTotal)
+        terrainExporter.writeTerrainFile(finishedTerrain, size, landTotal, mountainTotal, forestTotal, waterTotal, ravineTotal, desertTotal)
         print ()
 
     print("Statistics:")
-    print("[Land Total] " + str(landTotal + mountainTotal + forestTotal))
+    print("[Land Total] " + str(landTotal + mountainTotal + forestTotal + ravineTotal + desertTotal))
     print(" [Normal " + str(landTotal))
     print(" [Forests] " + str(forestTotal))
     print(" [Mountains] " + str(mountainTotal))
+    print(" [Deserts] "+str(desertTotal))
+    print(" [Ravines] "+str(ravineTotal))
     print("[Water Total] " + str(waterTotal))
+    print()
+    print ("Terrain Legend: ")
+    for i in tiles:
+        print (i + " : " + terrainTypes.terrainLegend.get(i))
     print("====================")
     print()
     print(finishedTerrain)
@@ -59,7 +70,7 @@ def startGeneration():
 
     # Generate the Base Field with Randoms
     for i in range(totalSize):
-        global waterTotal, landTotal, forestTotal, mountainTotal, generatedTileArr
+        global waterTotal, landTotal, forestTotal, mountainTotal, generatedTileArr, desertTotal, ravineTotal
         row += 1
 
         tile = random.randint(0, 1) # Generate Random Tile (Water or Land)
@@ -89,6 +100,13 @@ def startGeneration():
             elif random.randint(1, forestChance) == forestChance:  # Forests
                 tile = 3
                 forestTotal += 1
+            elif random.randint(1, desertChance) == desertChance: # Deserts
+                tile = 4
+                desertTotal += 1
+            elif random.randint(1, ravineChance) == ravineChance: # Ravines
+                tile = 5
+                ravineTotal += 1
+
 
         generatedTileArr.append(tiles[tile]) # Append the now Finished tile to the geenerated tile array.
 
